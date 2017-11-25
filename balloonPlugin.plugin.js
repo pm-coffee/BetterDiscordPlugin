@@ -2,14 +2,24 @@
 var baloonPlugin = function () {}
 
 //------------------------------------------------
+var logTag = "%c[BetterDiscord] %c ";
+var logStyle = "color: purple; font-weight: bold;";
 	var preDateTime;
 	var filter = "bal{";
+	var filterReg = new RegExp("bal\\{", "g");
 	// this.filter = "hoge";
 	var balloonCssClass = '<style type="text/css">.balloon{ border-radius: 4px; background-color: #ccc; margin-left: 8px; padding: 8px; padding-top: 3px; padding-bottom: 3px; position: relative; }</style>';
 	var balloonAfCssClass = '<style type="text/css">.balloon:after{ border-right: 6px solid #ccc; border-top: 6px solid transparent; border-bottom: 6px solid transparent; content: ""; margin-top: -5px; position: absolute; left: -6px; top: 50%;}</style>';
 
+var escapeReg = function(s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+var delFilter = function(s) {
+	return s.replace( filterReg, "");
+};
+
 baloonPlugin.prototype.inject = function(){
-	console.info("%c[BetterDiscord] %c baloonPlugin.inject()", "color: purple; font-weight: bold;");
+	console.info(logTag + "baloonPlugin.inject()", logStyle);
 
 	setTimeout(function(){
 		$('div.markup').each(function() {
@@ -19,14 +29,27 @@ baloonPlugin.prototype.inject = function(){
 			var messageText = $(this).text();
 			if(messageText.indexOf(filter) > -1){
 				var array = messageText.split(filter);
-				if(array[1]　!= ""){
-					$(this).text(array[0]);
+					console.info(logTag + "-------------------------------------------------", logStyle);
+					console.info(logTag + "html = " + $(this).html(), logStyle);
+					console.info(logTag + "messageText = " + messageText, logStyle);
+					console.info(logTag + "array[0] = " + array[0], logStyle);
+					console.info(logTag + "array[1] = " + array[1], logStyle);
+
+					var outputHtml = $(this).html();
+					var filterIndex = outputHtml.indexOf(filter);
+					console.info(logTag + "filterIndex = " + filterIndex, logStyle);
+					outputHtml = outputHtml.substring(0, filterIndex);
+					console.info(logTag + "outputHtml = " + outputHtml, logStyle);
+
+						$(this).html(outputHtml);
+
+					$(this).append('<font>' + array[0] + '</font>');
 					// $(this).append('<div style="' + balloonCssRaw + ': ' + balloonAfCssRaw + '">' + array[1] + '</div>');
 					$(this).append('<font class="balloon" color="#444444"/>');
-
-					$('font', this).text(array[1]);
+				if(array[1]　!= ""){
+					$('.balloon', this).text(array[1]);
 				}else{
-					// $(this).append('<div style="' + balloonCssRaw + ': ' + balloonAfCssRaw + '">' + "・・・" + '</div>');
+					$('.balloon', this).text("・・・");
 				}
 			}
 		});
@@ -36,7 +59,7 @@ baloonPlugin.prototype.inject = function(){
 	function balloonJudgeAndCreate(message) {
 		console.info("message = " + message);
 		if(message.indexOf(pattern) > -1){
-			
+
 		}
 	};
 //------------------------------------------------
@@ -88,7 +111,7 @@ baloonPlugin.prototype.observer = function (e) {
 	//raw MutationObserver event for each mutation
 	console.info("MutationObserver だお");
 	var currentTime = new Date().getTime();
-	if(currentTime - preDateTime >= 2000){
+	if(currentTime - preDateTime >= 500){
 		preDateTime = currentTime;
 		this.inject();
 	}
