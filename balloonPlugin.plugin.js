@@ -43,7 +43,7 @@ baloonPlugin.prototype.inject = function(){
 
 						$(this).html(outputHtml);
 
-					$(this).append('<font>' + array[0] + '</font>');
+					// $(this).append('<font>' + array[0] + '</font>');
 					// $(this).append('<div style="' + balloonCssRaw + ': ' + balloonAfCssRaw + '">' + array[1] + '</div>');
 					$(this).append('<font class="balloon" color="#444444"/>');
 				if(array[1]　!= ""){
@@ -130,7 +130,7 @@ baloonPlugin.prototype.getDescription = function () {
 };
 
 baloonPlugin.prototype.getVersion = function () {
-	return "0.1.0";
+	return "0.1.1";
 };
 
 baloonPlugin.prototype.getAuthor = function () {
